@@ -15,7 +15,7 @@ The repository and the ExoDisc dataset must be arranged as follows by default:
 │   └── op4/
 └── mask2former/
     ├── train_mask2former.py
-    └── requirements-mask2former-medsam-dinov2-lock.txt
+    └── requirements-mask2former_medsam_dinov2-lock.txt
 ```
 
 Custom dataset and output paths can also be provided through command-line arguments.
@@ -24,7 +24,7 @@ Custom dataset and output paths can also be provided through command-line argume
 
 ## Software environment
 
-`requirements-mask2former-medsam-dinov2-lock.txt` documents the software environment used for the experiments reported in the paper.
+`requirements-mask2former_medsam_dinov2-lock.txt` documents the software environment used for the experiments reported in the paper.
 
 The original environment was based on
 
