@@ -28,14 +28,14 @@ The repository, ExoDisc dataset, and MedSAM checkpoint must be arranged as follo
 │       └── medsam_vit_b.pth
 └── medsam/
     ├── evaluate_medsam_prompting.py
-    └── requirements-mask2former-medsam-dinov2-lock.txt
+    └── requirements-mask2former-medsam_dinov2-lock.txt
 ```
 
 Custom dataset, checkpoint, and output paths can also be provided through command-line arguments.
 
 ## Software environment
 
-`requirements-mask2former-medsam-dinov2-lock.txt` documents the software environment used for the experiments reported in the paper. The environment was shared with the Mask2Former and DINOv2 pipelines and therefore includes packages that are not directly required by this MedSAM evaluation script.
+`requirements-mask2former-medsam_dinov2-lock.txt` documents the software environment used for the experiments reported in the paper. The environment was shared with the Mask2Former and DINOv2 pipelines and therefore includes packages that are not directly required by this MedSAM evaluation script.
 
 The original container was based on:
 
