@@ -35,7 +35,7 @@ Custom dataset, checkpoint, and output paths can also be provided through comman
 
 ## Software environment
 
-`requirements-mask2former-medsam-dinov2-lock.txt` records the principal package versions resolved in the Singularity container used for the experiments reported in the paper.
+`requirements-mask2former-medsam-dinov2-lock.txt` documents the software environment used for the experiments reported in the paper. The environment was shared with the Mask2Former and DINOv2 pipelines and therefore includes packages that are not directly required by this MedSAM evaluation script.
 
 The original container was based on:
 
@@ -43,48 +43,53 @@ The original container was based on:
 pytorch/pytorch:2.1.2-cuda12.1-cudnn8-devel
 ```
 
-The principal packages used by the MedSAM evaluation pipeline were:
-
-* PyTorch 2.1.2 with CUDA 12.1;
-* torchvision 0.16.2;
-* torchaudio 2.1.2;
-* NumPy 2.2.6;
-* OpenCV headless 4.11.0.86;
-* pandas 2.3.3;
-* Segment Anything 1.0;
-* MedSAM commit `d71e8a1a99ad751840a22a7fa3ecfb4166fb1488`.
-
-A reproducible environment can be created with:
+To reproduce the original environment without using the container, create and activate a Python environment:
 
 ```bash
 python -m venv .venv-medsam
 source .venv-medsam/bin/activate
 python -m pip install --upgrade pip
-
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 \
-  --index-url https://download.pytorch.org/whl/cu121
-
-pip install numpy==2.2.6 \
-  opencv-python-headless==4.11.0.86 \
-  pillow==12.3.0 \
-  pandas==2.3.3 \
-  tqdm \
-  segment-anything==1.0
 ```
 
-Then install the exact MedSAM revision used for the reported experiments:
+Install the PyTorch build used in the original experiments:
+
+```bash
+pip install torch==2.1.2 torchvision==0.16.2 \
+  --index-url https://download.pytorch.org/whl/cu121
+```
+
+Then install the remaining dependencies listed in the lock file:
+
+```bash
+pip install numpy==1.26.4 \
+  transformers==4.49.0 \
+  accelerate \
+  safetensors \
+  huggingface_hub \
+  opencv-python-headless \
+  pillow \
+  pandas \
+  matplotlib \
+  tqdm \
+  scikit-learn \
+  pyyaml \
+  scipy \
+  monai \
+  scikit-image \
+  SimpleITK \
+  segment-anything
+```
+
+Finally, install MedSAM from the official repository:
 
 ```bash
 git clone https://github.com/bowang-lab/MedSAM.git
 cd MedSAM
-git checkout d71e8a1a99ad751840a22a7fa3ecfb4166fb1488
 pip install -e .
 cd ..
 ```
 
-The complete lock file also contains packages used by the shared Mask2Former and DINOv2 container. They are documented for reproducibility but are not all directly required by this MedSAM evaluation script.
-
-A CUDA-capable NVIDIA GPU is recommended. The commands above reproduce the original CUDA 12.1 environment. Users with a different CUDA configuration must install a compatible PyTorch build.
+A CUDA-capable NVIDIA GPU is recommended. Users with a different CUDA configuration must install the corresponding compatible PyTorch build.
 
 ## MedSAM checkpoint
 
