@@ -113,8 +113,8 @@ Citation to be added after publication.
 
 ## License
 
-* **Code:** License to be added.
-* **Dataset:** CC BY 4.0.
+- **Code:** MIT License.
+- **Dataset:** Creative Commons Attribution 4.0 International (CC BY 4.0).
 
 ## Contact
 
