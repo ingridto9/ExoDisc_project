@@ -1,159 +1,210 @@
-# YOLO11m-seg benchmark
+# MedSAM prompting benchmark
 
-This directory contains the code used to train and evaluate YOLO11m-seg on the ExoDisc patient-wise four-fold benchmark.
+This directory contains the evaluation pipeline used to reproduce the MedSAM prompting experiments reported in the ExoDisc paper.
+
+MedSAM is evaluated using ground-truth instance annotations under two prompting strategies:
+
+* bounding-box prompts;
+* single positive point prompts.
+
+No model training or fine-tuning is performed.
 
 ## Expected directory structure
 
-The repository and the ExoDisc dataset must be arranged as follows by default:
+The repository, ExoDisc dataset, and MedSAM checkpoint must be arranged as follows by default:
 
 ```text
 ~/ExoDisc_project/
 ├── ExoDisc/
 │   ├── op1/
 │   │   ├── images/
-│   │   └── labels/
+│   │   └── annotations/
+│   │       └── instances_default.json
 │   ├── op2/
 │   ├── op3/
 │   └── op4/
-└── yolo11/
-    ├── train_yolo11m_fold.py
-    ├── evaluate_yolo_semantic.py
-    └── requirements-yolo11-lock.txt
+├── checkpoints/
+│   └── medsam/
+│       └── medsam_vit_b.pth
+└── medsam/
+    ├── evaluate_medsam_prompting.py
+    └── requirements-mask2former-medsam-dinov2-lock.txt
 ```
 
-The scripts also accept custom project and results paths through command-line arguments.
+Custom dataset, checkpoint, and output paths can also be provided through command-line arguments.
 
 ## Software environment
 
-`requirements-yolo11-lock.txt` records the exact principal package versions resolved in the Singularity container used for the experiments reported in the paper.
+`requirements-mask2former-medsam-dinov2-lock.txt` records the principal package versions resolved in the Singularity container used for the experiments reported in the paper.
 
-The original environment used:
+The original container was based on:
 
-- PyTorch 2.11.0 with CUDA 12.8;
-- torchvision 0.26.0 with CUDA 12.8;
-- torchaudio 2.11.0 with CUDA 12.8;
-- Ultralytics 8.4.90 at commit `f9a0a334a9427366251b0b8bf93c569e887f21c7`.
+```text
+pytorch/pytorch:2.1.2-cuda12.1-cudnn8-devel
+```
 
-A reproducible installation can be created with:
+The principal packages used by the MedSAM evaluation pipeline were:
+
+* PyTorch 2.1.2 with CUDA 12.1;
+* torchvision 0.16.2;
+* torchaudio 2.1.2;
+* NumPy 2.2.6;
+* OpenCV headless 4.11.0.86;
+* pandas 2.3.3;
+* Segment Anything 1.0;
+* MedSAM commit `d71e8a1a99ad751840a22a7fa3ecfb4166fb1488`.
+
+A reproducible environment can be created with:
 
 ```bash
-python -m venv .venv-yolo11
-source .venv-yolo11/bin/activate
+python -m venv .venv-medsam
+source .venv-medsam/bin/activate
 python -m pip install --upgrade pip
 
-pip install torch==2.11.0 torchvision==0.26.0 torchaudio==2.11.0 \
-  --index-url https://download.pytorch.org/whl/cu128
+pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 \
+  --index-url https://download.pytorch.org/whl/cu121
 
-pip install numpy==2.4.3 \
-  opencv-python-headless==5.0.0.93 \
-  pyyaml==6.0.3 \
-  scipy==1.18.0
+pip install numpy==2.2.6 \
+  opencv-python-headless==4.11.0.86 \
+  pillow==12.3.0 \
+  pandas==2.3.3 \
+  tqdm \
+  segment-anything==1.0
+```
 
-git clone https://github.com/ultralytics/ultralytics.git
-cd ultralytics
-git checkout f9a0a334a9427366251b0b8bf93c569e887f21c7
+Then install the exact MedSAM revision used for the reported experiments:
+
+```bash
+git clone https://github.com/bowang-lab/MedSAM.git
+cd MedSAM
+git checkout d71e8a1a99ad751840a22a7fa3ecfb4166fb1488
 pip install -e .
 cd ..
 ```
 
-A CUDA-capable NVIDIA GPU is recommended. The exact CUDA build above reproduces the original software environment; users running a different CUDA version must install the corresponding PyTorch build.
+The complete lock file also contains packages used by the shared Mask2Former and DINOv2 container. They are documented for reproducibility but are not all directly required by this MedSAM evaluation script.
 
-## Cross-validation folds
+A CUDA-capable NVIDIA GPU is recommended. The commands above reproduce the original CUDA 12.1 environment. Users with a different CUDA configuration must install a compatible PyTorch build.
 
-The benchmark uses patient-wise leave-one-operation-out cross-validation:
+## MedSAM checkpoint
 
-| Fold | Training operations | Validation operation |
-|---|---|---|
-| fold1 | op2, op3, op4 | op1 |
-| fold2 | op1, op3, op4 | op2 |
-| fold3 | op1, op2, op4 | op3 |
-| fold4 | op1, op2, op3 | op4 |
+The pretrained MedSAM ViT-B checkpoint is not distributed with this repository.
 
-The benchmark contains 12 foreground classes. The `lamina` class is excluded, and the original YOLO class identifiers are remapped automatically by the training script.
-
-## Training
-
-Run one fold from the repository root:
-
-```bash
-python yolo11/train_yolo11m_fold.py --fold fold1
-```
-
-Repeat the command for `fold2`, `fold3`, and `fold4`.
-
-The default training configuration used in the paper is:
-
-| Parameter | Value |
-|---|---:|
-| Model | `yolo11m-seg.pt` |
-| Epochs | 30 |
-| Image size | 640 |
-| Batch size | 16 |
-| Patience | 30 |
-
-The script first creates the YOLO-formatted fold dataset under:
+Download the official [MedSAM ViT-B checkpoint](https://drive.google.com/drive/folders/1ETWmi4AiniJeWOt6HAsYgTjYv_fkgzoN) and place the file at:
 
 ```text
-~/ExoDisc_project/experiments/yolo/<fold>/
+~/ExoDisc_project/checkpoints/medsam/medsam_vit_b.pth
 ```
 
-Images are linked rather than copied. Training outputs are saved under:
-
-```text
-~/ExoDisc_results/yolo11/<fold>/
-```
-
-The principal options can be overridden, for example:
+A different checkpoint location can be provided with:
 
 ```bash
-python yolo11/train_yolo11m_fold.py \
-  --fold fold1 \
-  --dataset-root ~/ExoDisc_project/ExoDisc \
-  --project-root ~/ExoDisc_project \
-  --results-root ~/ExoDisc_results
+--checkpoint /path/to/medsam_vit_b.pth
 ```
 
-## Semantic evaluation
+## Evaluation folds
 
-After all folds have been trained, evaluate their `best.pt` checkpoints with:
+The evaluation follows the same leave-one-operation-out organization used throughout the ExoDisc benchmark:
+
+| Fold  | Evaluated operation |
+| ----- | ------------------- |
+| fold1 | op1                 |
+| fold2 | op2                 |
+| fold3 | op3                 |
+| fold4 | op4                 |
+
+Since MedSAM is evaluated in a prompting setting without training, each fold identifies only the operation used for evaluation.
+
+## Prompt generation
+
+Prompts are generated automatically from the released ground-truth instance annotations.
+
+For bounding-box prompting, the tight bounding box enclosing each ground-truth instance is used.
+
+For point prompting, one positive point is placed at the centroid of the ground-truth instance. If the centroid does not fall inside the instance mask, the nearest foreground pixel is used.
+
+Predictions are generated independently for each annotated instance and then combined into semantic masks for evaluation.
+
+## Evaluation
+
+Run the script from the repository root.
+
+Evaluate all four folds using both prompting strategies:
 
 ```bash
-python yolo11/evaluate_yolo_semantic.py --fold all
+python medsam/evaluate_medsam_prompting.py
 ```
 
-To evaluate a single fold:
+Evaluate only bounding-box prompting:
 
 ```bash
-python yolo11/evaluate_yolo_semantic.py --fold fold1
+python medsam/evaluate_medsam_prompting.py \
+  --prompt_modes bbox
 ```
 
-The default inference settings are:
+Evaluate only point prompting:
 
-| Parameter | Value |
-|---|---:|
-| Image size | 640 |
-| Confidence threshold | 0.25 |
-| NMS IoU threshold | 0.70 |
-
-The evaluator merges YOLO instance predictions into semantic masks and reports foreground mIoU, mean Dice, mean class accuracy, foreground frequency-weighted IoU, background IoU, and per-class metrics.
-
-Evaluation outputs are written to:
-
-```text
-~/ExoDisc_results/semantic_benchmark/yolo11m_seg/
+```bash
+python medsam/evaluate_medsam_prompting.py \
+  --prompt_modes point
 ```
 
-For each fold, the script generates:
+Evaluate a single fold:
+
+```bash
+python medsam/evaluate_medsam_prompting.py \
+  --fold fold1
+```
+
+Use custom paths:
+
+```bash
+python medsam/evaluate_medsam_prompting.py \
+  --dataset_root ~/ExoDisc_project/ExoDisc \
+  --checkpoint ~/ExoDisc_project/checkpoints/medsam/medsam_vit_b.pth \
+  --out_root ~/ExoDisc_results/semantic_benchmark/medsam_prompting
+```
+
+Save the predicted semantic masks in addition to the numerical results:
+
+```bash
+python medsam/evaluate_medsam_prompting.py \
+  --save_masks
+```
+
+## Output
+
+By default, results are written to:
 
 ```text
-<fold>_metrics.csv
+~/ExoDisc_results/
+└── semantic_benchmark/
+    └── medsam_prompting/
+        ├── bbox/
+        └── point/
+```
+
+For each prompting strategy and fold, the script generates:
+
+```text
+<fold>_image_class_metrics.csv
+<fold>_instance_metrics.csv
 <fold>_per_class.csv
-<fold>_confusion_matrix.csv
+<fold>_metrics.csv
 ```
 
-When `--fold all` is used, it also generates:
+For each prompting strategy, it also generates:
 
 ```text
 summary_folds.csv
+summary_per_class_all_folds.csv
 summary_mean_std.csv
 ```
+
+When both prompting strategies are evaluated, the combined summary is saved as:
+
+```text
+summary_mean_std_all_prompt_modes.csv
+```
+
+Predicted semantic masks are generated only when the `--save_masks` option is used.
