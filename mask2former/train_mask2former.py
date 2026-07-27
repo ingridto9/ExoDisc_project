@@ -16,7 +16,8 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import AutoImageProcessor, Mask2FormerForUniversalSegmentation
 
 
-RAW_ROOT = Path.home() / "ExoDisc_project"
+PROJECT_ROOT = Path.home() / "ExoDisc_project"
+DATASET_ROOT = PROJECT_ROOT / "ExoDisc"
 RESULTS_ROOT = Path.home() / "ExoDisc_results" / "semantic_benchmark"
 
 NUM_CLASSES = 13
@@ -71,8 +72,8 @@ class ExoDiscMask2FormerDataset(Dataset):
         self.imgsz = imgsz
 
         for op in ops:
-            image_dir = RAW_ROOT / op / "images"
-            mask_dir = RAW_ROOT / op / "masks_semantic"
+            image_dir = DATASET_ROOT / op / "images"
+            mask_dir = DATASET_ROOT / op / "masks_semantic"
 
             if not image_dir.exists():
                 raise FileNotFoundError(f"Missing image dir: {image_dir}")
@@ -349,7 +350,7 @@ def run_training(
     print(f"MODEL: hf_mask2former | FOLD: {fold_name}", flush=True)
     print(f"CHECKPOINT: {checkpoint}", flush=True)
     print(f"DEVICE: {device}", flush=True)
-    print(f"RAW_ROOT: {RAW_ROOT}", flush=True)
+    print(f"DATASET_ROOT: {DATASET_ROOT}", flush=True)
     print("=" * 100, flush=True)
 
     fold = FOLDS[fold_name]
@@ -416,7 +417,7 @@ def run_training(
         "num_classes": NUM_CLASSES,
         "seed": seed,
         "use_amp": use_amp,
-        "raw_root": str(RAW_ROOT),
+        "dataset_root": str(DATASET_ROOT),
         "results_root": str(RESULTS_ROOT),
     }
 
@@ -555,7 +556,7 @@ def main():
     use_amp = not args.no_amp
 
     print("HF Mask2Former training", flush=True)
-    print(f"RAW_ROOT: {RAW_ROOT}", flush=True)
+    print(f"DATASET_ROOT: {DATASET_ROOT}", flush=True)
     print(f"RESULTS_ROOT: {RESULTS_ROOT}", flush=True)
     print(f"Folds: {args.folds}", flush=True)
     print(f"Checkpoint: {args.checkpoint}", flush=True)
