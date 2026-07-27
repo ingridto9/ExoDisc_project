@@ -17,14 +17,14 @@ The repository and the ExoDisc dataset must be arranged as follows by default:
 │   └── op4/
 └── dinov2/
     ├── train_dinov2.py
-    └── requirements-mask2former-medsam-dinov2-lock.txt
+    └── requirements-mask2former_medsam_dinov2-lock.txt
 ```
 
 The scripts also accept custom dataset and results paths through command-line arguments.
 
 ## Software environment
 
-`requirements-mask2former-medsam-dinov2-lock.txt` documents the software environment used for the experiments reported in the paper.
+`requirements-mask2former_medsam_dinov2-lock.txt` documents the software environment used for the experiments reported in the paper.
 
 The original environment was based on:
 
