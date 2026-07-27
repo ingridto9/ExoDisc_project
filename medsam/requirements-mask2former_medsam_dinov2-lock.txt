@@ -1,0 +1,40 @@
+# Exact versions resolved in mask2former.sif (built July 2026 on BioHPC Mufasa)
+# Base image: pytorch/pytorch:2.1.2-cuda12.1-cudnn8-devel
+# Generated via: singularity exec mask2former.sif python -m pip freeze
+#
+# NOTE: opencv-python and opencv-python-headless were BOTH present in the
+# resolved environment. Installing only opencv-python-headless (as in the
+# .def file) is recommended; the plain opencv-python entry below is reported
+# for transparency but should not be installed alongside the headless one.
+#
+# NOTE: tqdm and PyYAML were pre-installed via conda in the base image and
+# did not expose a clean pip version tag (shown as a local build path in the
+# freeze, not a version number). Any recent release of both is compatible
+# with this pipeline; install unpinned if not using the container.
+
+numpy==2.2.6
+transformers==4.49.0
+accelerate==1.14.0
+safetensors==0.8.0
+huggingface_hub==0.36.2
+opencv-python-headless==4.11.0.86
+# opencv-python==5.0.0.93   # present alongside headless in the container — see note above
+pillow==12.3.0
+pandas==2.3.3
+matplotlib==3.10.9
+tqdm            # version not pinned by the container, see note above
+PyYAML           # version not pinned by the container, see note above
+scipy==1.15.3
+monai==1.6.0
+scikit-image==0.25.2
+scikit-learn==1.7.2
+simpleitk==2.5.5
+segment-anything==1.0
+torch==2.13.0
+torchvision==0.16.2
+torchaudio==2.1.2
+
+# MedSAM: editable install from https://github.com/bowang-lab/MedSAM.git
+# medsam==0.0.1, commit d71e8a1a99ad751840a22a7fa3ecfb4166fb1488
+#   git clone https://github.com/bowang-lab/MedSAM.git
+#   cd MedSAM && git checkout d71e8a1a99ad751840a22a7fa3ecfb4166fb1488 && pip install -e .
