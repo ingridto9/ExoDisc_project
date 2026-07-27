@@ -32,7 +32,7 @@ The pretrained MedSAM checkpoint is **not distributed** with this repository.
 
 Please download the official MedSAM ViT-B checkpoint from the official MedSAM repository:
 
-https://github.com/bowang-lab/MedSAM
+[https://github.com/bowang-lab/MedSAM](https://drive.google.com/drive/folders/1ETWmi4AiniJeWOt6HAsYgTjYv_fkgzoN)
 
 and place it in
 
