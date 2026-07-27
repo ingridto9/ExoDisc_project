@@ -29,4 +29,3 @@ The resulting directory structure should be:
 ```
 
 where each operation folder contains the RGB images, COCO annotations, and the provided semantic segmentation masks.
-
