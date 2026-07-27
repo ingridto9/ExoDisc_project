@@ -1,0 +1,29 @@
+# Exact versions resolved in semantic.sif (built July 2026 on BioHPC Mufasa)
+# Base image: ultralytics/ultralytics:latest
+# Generated via: singularity exec semantic.sif python -m pip freeze
+#
+# NOTE: this environment also contains an editable "ultralytics" install
+# (inherited from the base image) even though YOLO is not trained here.
+# It is harmless to leave installed but is not required for U-Net++,
+# DeepLabV3+, or SegFormer-B2.
+
+numpy==2.4.3
+segmentation_models_pytorch==0.5.0
+timm==1.0.27
+opencv-python-headless==5.0.0.93
+pyyaml==6.0.3
+pandas==3.0.3
+matplotlib==3.11.0
+pillow==12.1.1
+tqdm==4.68.4
+scikit-learn==1.9.0
+scipy==1.18.0
+huggingface_hub==1.23.0
+safetensors==0.8.0
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
+torchaudio==2.11.0+cu128
+
+# ultralytics: editable install inherited from the base image, not used by
+# these three models. ultralytics==8.4.92 at build time,
+# commit bca607bd3211aca37a69de1a6363d828f79f6bae
