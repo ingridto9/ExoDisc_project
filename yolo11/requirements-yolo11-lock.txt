@@ -1,0 +1,22 @@
+# Exact versions resolved in yolo11.sif (built July 2026 on BioHPC Mufasa)
+# Base image: ultralytics/ultralytics:latest
+# Generated via: singularity exec yolo11.sif python -m pip freeze
+#
+# NOTE: this build resolved ultralytics==8.4.90, while the semantic.sif
+# environment (built from the same "latest" base image tag) resolved
+# ultralytics==8.4.92. This confirms the base image was not identical across
+# the two builds — a reason to keep both lock files rather than a single
+# shared one.
+
+numpy==2.4.3
+opencv-python-headless==5.0.0.93
+pyyaml==6.0.3
+scipy==1.18.0
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
+torchaudio==2.11.0+cu128
+
+# ultralytics: editable install, ultralytics==8.4.90 at build time,
+# commit f9a0a334a9427366251b0b8bf93c569e887f21c7
+#   git clone https://github.com/ultralytics/ultralytics.git
+#   cd ultralytics && git checkout f9a0a334a9427366251b0b8bf93c569e887f21c7 && pip install -e .
