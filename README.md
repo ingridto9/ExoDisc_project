@@ -1,5 +1,16 @@
 # ExoDisc Project
-![](media/op3.gif)(media/op4.gif)
+<table>
+<tr>
+<td align="center">
+<img src="media/op3.gif" width="350"><br>
+<b>Operation 3</b>
+</td>
+<td align="center">
+<img src="media/op4.gif" width="350"><br>
+<b>Operation 4</b>
+</td>
+</tr>
+</table>
 
 
 
