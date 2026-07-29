@@ -1,5 +1,5 @@
 # ExoDisc Project
-
+![](media/op1.gif)
 Code accompanying the ExoDisc dataset descriptor:
 
 > **ExoDisc: An annotated dataset for surgical instrument and anatomy segmentation in open lumbar microdiscectomy**
