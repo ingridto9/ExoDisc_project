@@ -7,7 +7,7 @@ Code accompanying the ExoDisc dataset descriptor:
 
 > **ExoDisc: An annotated dataset for surgical instrument and anatomy segmentation in open lumbar microdiscectomy**
 > Ingrid Tombini, Domenico Pachioli, Mattia Magro, Hans Schoepp, Antoine Pfeil, Janina Fritzenschaft, Niccolò Innocenti, Francesco Costa, Elena De Momi
-> *Scientific Data* (submitted) — DOI: *to be added*
+> *Scientific Data* (submitted) — DOI: 10.5281/zenodo.21621053
 
 This repository contains the code used to reproduce the benchmark experiments presented in the paper, including model training, inference, and evaluation. The ExoDisc dataset (RGB images, COCO-format instance annotations, and semantic segmentation masks) is distributed separately through Zenodo.
 
